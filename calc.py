@@ -59,8 +59,19 @@ class Calculator:
                 except ValueError:
                     print('Please choose a number from 1 to 4.')
 
-            self.x = float(input('First Number: '))
-            self.y = float(input('Second Number: '))
+            while True:
+                try:
+                    self.x = float(input('First Number: '))
+                    break
+                except ValueError:
+                    print('Please enter a valid number for the first number.')
+
+            while True:
+                try:
+                    self.y = float(input('Second Number: '))
+                    break
+                except ValueError:
+                    print('Please enter a valid number for the second number.')
 
             self.operation()
 
