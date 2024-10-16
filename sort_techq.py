@@ -7,18 +7,23 @@ class SortingApp:
         self.window.title("Sorting Techniques")
         self.window.geometry("600x400")
 
+        
         self.label = Label(window, text="Enter 5 numbers separated by commas", font=("Arial", 14))
         self.label.pack(pady=10)
 
+        
         self.input = Entry(window, width=50)
         self.input.pack(pady=10)
 
+        
         self.sort_button = Button(window, text="Sort", command=self.start_sorting)
         self.sort_button.pack(pady=10)
 
+        
         self.output_label = Label(window, text="", font=("Arial", 12))
         self.output_label.pack(pady=10)
 
+        # menu for techniques
         self.algorithms = ["Bubble Sort", "Insertion Sort", "Selection Sort", "Quick Sort", "Merge Sort"]
         self.selected_algorithm = StringVar()
         self.selected_algorithm.set(self.algorithms[0])
@@ -26,22 +31,26 @@ class SortingApp:
         self.algo_menu.pack(pady=10)
 
     def start_sorting(self):
+        # input and parsing
         input_data = self.input.get()
         try:
-            arr = [int(x.strip()) for x in input_data.split(',')]
+            arr = [float(x.strip()) for x in input_data.split(',')]
             if len(arr) != 5:
                 raise ValueError("Please enter exactly 5 numbers.")
+            
+            # for dropdown
             selected_algo = self.selected_algorithm.get()
             self.sort_and_display(arr, selected_algo)
         except ValueError as e:
             self.output_label.config(text=f"Error: {e}")
         
     def update_output(self, arr, step, algorithm_name):
+        # ui update
         self.output_label.config(text=f"{algorithm_name} - Step {step}: {arr}")
-        self.window.update()
-        time.sleep(1)
+        self.window.update() 
+        time.sleep(1)  # delay for visuals
 
-    # Sorting methods
+    # sorting techniques
     def bubble_sort(self, arr):
         arr = arr.copy()
         n = len(arr)
@@ -132,7 +141,7 @@ class SortingApp:
                 step += 1
         return step
 
-    # Sorting logic dispatcher
+    # logic for process
     def sort_and_display(self, arr, algorithm_name):
         if algorithm_name == "Bubble Sort":
             self.bubble_sort(arr)
@@ -140,13 +149,13 @@ class SortingApp:
             self.insertion_sort(arr)
         elif algorithm_name == "Selection Sort":
             self.selection_sort(arr)
-        elif algorithm_name == "Quick Sort":    
+        elif algorithm_name == "Quick Sort":
             self.quick_sort(arr.copy(), 0, len(arr) - 1)
         elif algorithm_name == "Merge Sort":
             self.merge_sort(arr.copy())
 
 
-# Main application loop
+
 window = Tk()
 app = SortingApp(window)
 window.mainloop()
