@@ -1,144 +1,161 @@
-class ModeChooser:
-    def __init__(self):
-        pass  # No need for a state attribute here
-class ModeChooser:
-    def __init__(self):
-        pass
+from tkinter import *
+import time
 
-    def run(self):
-        while True:
-            print('1. Number Array / 2. Decimal to Binary / 3. Number Identifier / 4. Palindrome Checker')
-            try:
-                choice = int(input('Choose a mode: '))
-                if 1 <= choice <= 4:
-                    if choice == 1:
-                        number_array = NumberArray()
-                        number_array.get_numbers()
-                        number_array.ascend()
-                    elif choice == 2:
-                        decimal_to_binary = DecimaltoBinary()
-                        while True:
-                            try:
-                                decimal_num = int(input("Enter a positive decimal number: "))
-                                decimal_to_binary.converter(decimal_num)
-                                decimal_to_binary.display_binary()
-                                break
-                            except ValueError as e:
-                                print(e)
-                    elif choice == 3:
-                        identifier = Identifier()
-                        identifier.get_numbers()
-                        identifier.value_finder()
-                    elif choice == 4:
-                        palindrome_checker = PalindromeChecker()
-                        while True:
-                            word = input("Enter a word: ")
-                            if palindrome_checker.checker(word):
-                                print(f"{word} is a palindrome.")
-                            else:
-                                print(f"{word} is not a palindrome.")
-                            if input("Check another word? (y/n): ").lower() != 'y':
-                                break
+class SortingApp:
+    def __init__(self, window):
+        self.window = window
+        self.window.title("Sorting Techniques")
+        self.window.geometry("600x400")
 
-                    # Check for "y" or "n" only
-                    while True:
-                        another_mode = input("Run another mode? (y/n): ").lower()
-                        if another_mode == 'y':
-                            break
-                        elif another_mode == 'n':
-                            return  # Exit the program
-                        else:
-                            print("Invalid input. Please enter 'y' or 'n'.")
+        
+        self.label = Label(window, text="Enter 5 numbers separated by commas", font=("Arial", 14))
+        self.label.pack(pady=10)
 
+        
+        self.input = Entry(window, width=50)
+        self.input.pack(pady=10)
+
+        
+        self.sort_button = Button(window, text="Sort", command=self.start_sorting)
+        self.sort_button.pack(pady=10)
+
+        
+        self.output_label = Label(window, text="", font=("Arial", 12))
+        self.output_label.pack(pady=10)
+
+        # menu for techniques
+        self.algorithms = ["Bubble Sort", "Insertion Sort", "Selection Sort", "Quick Sort", "Merge Sort"]
+        self.selected_algorithm = StringVar()
+        self.selected_algorithm.set(self.algorithms[0])
+        self.algo_menu = OptionMenu(window, self.selected_algorithm, *self.algorithms)
+        self.algo_menu.pack(pady=10)
+
+    def start_sorting(self):
+        # input and parsing
+        input_data = self.input.get()
+        try:
+            arr = [float(x.strip()) for x in input_data.split(',')]
+            if len(arr) != 5:
+                raise ValueError("Please enter exactly 5 numbers.")
+            
+            # for dropdown
+            selected_algo = self.selected_algorithm.get()
+            self.sort_and_display(arr, selected_algo)
+        except ValueError as e:
+            self.output_label.config(text=f"Error: {e}")
+        
+    def update_output(self, arr, step, algorithm_name):
+        # ui update
+        self.output_label.config(text=f"{algorithm_name} - Step {step}: {arr}")
+        self.window.update() 
+        time.sleep(1)  # delay for visuals
+
+    # sorting techniques
+    def bubble_sort(self, arr):
+        arr = arr.copy()
+        n = len(arr)
+        step = 1
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                self.update_output(arr, step, "Bubble Sort")
+                step += 1
+
+    def insertion_sort(self, arr):
+        arr = arr.copy()
+        step = 1
+        for i in range(1, len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and key < arr[j]:
+                arr[j + 1] = arr[j]
+                j -= 1
+                self.update_output(arr, step, "Insertion Sort")
+                step += 1
+            arr[j + 1] = key
+            self.update_output(arr, step, "Insertion Sort")
+            step += 1
+
+    def selection_sort(self, arr):
+        arr = arr.copy()
+        step = 1
+        for i in range(len(arr)):
+            min_idx = i
+            for j in range(i + 1, len(arr)):
+                if arr[j] < arr[min_idx]:
+                    min_idx = j
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+            self.update_output(arr, step, "Selection Sort")
+            step += 1
+
+    def quick_sort(self, arr, low, high, step=1):
+        if low < high:
+            pi = self.partition(arr, low, high)
+            self.update_output(arr, step, "Quick Sort")
+            step += 1
+            step = self.quick_sort(arr, low, pi - 1, step)
+            step = self.quick_sort(arr, pi + 1, high, step)
+        return step
+
+    def partition(self, arr, low, high):
+        pivot = arr[high]
+        i = low - 1
+        for j in range(low, high):
+            if arr[j] < pivot:
+                i += 1
+                arr[i], arr[j] = arr[j], arr[i]
+        arr[i + 1], arr[high] = arr[high], arr[i + 1]
+        return i + 1
+
+    def merge_sort(self, arr, step=1):
+        if len(arr) > 1:
+            mid = len(arr) // 2
+            L = arr[:mid]
+            R = arr[mid:]
+            step = self.merge_sort(L, step)
+            step = self.merge_sort(R, step)
+
+            i = j = k = 0
+            while i < len(L) and j < len(R):
+                if L[i] < R[j]:
+                    arr[k] = L[i]
+                    i += 1
                 else:
-                    print('Invalid choice. Please enter a number between 1 and 4.')
-            except ValueError:
-                print('Invalid input. Please enter a number.')
+                    arr[k] = R[j]
+                    j += 1
+                self.update_output(arr, step, "Merge Sort")
+                step += 1
+                k += 1
+            while i < len(L):
+                arr[k] = L[i]
+                i += 1
+                k += 1
+                self.update_output(arr, step, "Merge Sort")
+                step += 1
+            while j < len(R):
+                arr[k] = R[j]
+                j += 1
+                k += 1
+                self.update_output(arr, step, "Merge Sort")
+                step += 1
+        return step
 
-class NumberArray:
-    def __init__(self):
-        self.numbers = []
-
-    def get_numbers(self):
-        for i in range(10):
-            while True:
-                try:
-                    number = float(input(f"Enter number {i+1}: "))
-                    self.numbers.append(number)
-                    break
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-
-    def ascend(self):
-        self.numbers.sort()
-        print('The values in ascending order: ', self.numbers)
-
-class DecimaltoBinary:
-    def __init__(self):
-        self.binary_array = []
-
-    def converter(self, decimal_num):
-        if decimal_num < 0:
-            raise ValueError('Input must be positive numbers!')
-
-        while decimal_num > 0:
-            remainder = decimal_num % 2
-            self.binary_array.append(remainder)
-            decimal_num //= 2
-
-        self.binary_array.reverse()  # binary correction
-
-    def display_binary(self):
-        print('Binary representation:', ''.join(str(x) for x in self.binary_array))
-
-class Identifier:
-    def __init__(self):
-        self.numbers = []
-
-    def get_numbers(self):
-        for i in range(10):
-            while True:
-                try:
-                    number = float(input(f"Enter number {i+1}: "))
-                    self.numbers.append(number)
-                    break
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-
-    def value_finder(self):
-        if len(self.numbers) < 2:
-            raise ValueError('2 numbers are required!')
-
-        highest1 = highest2 = self.numbers[0]
-        lowest1 = lowest2 = self.numbers[0]
-
-        for i in range(1, len(self.numbers)):
-            num = self.numbers[i]
-            if num > highest1:
-                highest2 = highest1
-                highest1 = num
-            elif num > highest2:
-                highest2 = num
-            if num < lowest1:
-                lowest2 = lowest1
-                lowest1 = num
-            elif num < lowest2:
-                lowest2 = num
-
-        print("1st highest:", highest1)
-        print("2nd highest:", highest2)
-        print("1st lowest:", lowest1)
-        print("2nd lowest:", lowest2)
-
-class PalindromeChecker:
-    def __init__(self):
-        pass
-
-    def checker(self, word):
-        word = word.lower()
-        return word == word[::-1]
+    # logic for process
+    def sort_and_display(self, arr, algorithm_name):
+        if algorithm_name == "Bubble Sort":
+            self.bubble_sort(arr)
+        elif algorithm_name == "Insertion Sort":
+            self.insertion_sort(arr)
+        elif algorithm_name == "Selection Sort":
+            self.selection_sort(arr)
+        elif algorithm_name == "Quick Sort":
+            self.quick_sort(arr.copy(), 0, len(arr) - 1)
+        elif algorithm_name == "Merge Sort":
+            self.merge_sort(arr.copy())
 
 
-# Start the program
-mode_chooser = ModeChooser()
-mode_chooser.run()
+
+window = Tk()
+app = SortingApp(window)
+window.mainloop()

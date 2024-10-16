@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 import time
 
 class SortingApp:
@@ -7,30 +8,36 @@ class SortingApp:
         self.window.title("Sorting Techniques")
         self.window.geometry("600x400")
 
-        
+    
         self.label = Label(window, text="Enter 5 numbers separated by commas", font=("Arial", 14))
         self.label.pack(pady=10)
 
-        
+        # input field
         self.input = Entry(window, width=50)
         self.input.pack(pady=10)
 
-        
+        # sort button
         self.sort_button = Button(window, text="Sort", command=self.start_sorting)
         self.sort_button.pack(pady=10)
 
-        
-        self.output_label = Label(window, text="", font=("Arial", 12))
-        self.output_label.pack(pady=10)
-
-        # menu for techniques
+        # selecter
         self.algorithms = ["Bubble Sort", "Insertion Sort", "Selection Sort", "Quick Sort", "Merge Sort"]
         self.selected_algorithm = StringVar()
         self.selected_algorithm.set(self.algorithms[0])
         self.algo_menu = OptionMenu(window, self.selected_algorithm, *self.algorithms)
         self.algo_menu.pack(pady=10)
 
+        # table visuals
+        self.tree = ttk.Treeview(window, columns=('Step', 'Array'), show='headings')
+        self.tree.heading('Step', text='Step')
+        self.tree.heading('Array', text='Result')
+        self.tree.pack(pady=10, fill=BOTH, expand=True)
+
     def start_sorting(self):
+        # prev. step visuals
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+            
         # input and parsing
         input_data = self.input.get()
         try:
@@ -38,16 +45,16 @@ class SortingApp:
             if len(arr) != 5:
                 raise ValueError("Please enter exactly 5 numbers.")
             
-            # for dropdown
+           
             selected_algo = self.selected_algorithm.get()
             self.sort_and_display(arr, selected_algo)
         except ValueError as e:
-            self.output_label.config(text=f"Error: {e}")
-        
+            self.tree.insert("", "end", values=(f"Error: {e}", ""))
+
     def update_output(self, arr, step, algorithm_name):
-        # ui update
-        self.output_label.config(text=f"{algorithm_name} - Step {step}: {arr}")
-        self.window.update() 
+        # table view
+        self.tree.insert("", "end", values=(step, str(arr)))
+        self.window.update()
         time.sleep(1)  # delay for visuals
 
     # sorting techniques
@@ -141,7 +148,7 @@ class SortingApp:
                 step += 1
         return step
 
-    # logic for process
+    # display
     def sort_and_display(self, arr, algorithm_name):
         if algorithm_name == "Bubble Sort":
             self.bubble_sort(arr)
@@ -155,7 +162,7 @@ class SortingApp:
             self.merge_sort(arr.copy())
 
 
-
+# Main application
 window = Tk()
 app = SortingApp(window)
 window.mainloop()
