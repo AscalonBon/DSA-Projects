@@ -286,7 +286,7 @@ class IndexRange:
 # main loop
 def main():
     while True:
-        print('Welcome to the Extended Program!')
+        print('Welcome to Lab Exercise #2!')
         print('+++++++++++++++++++++++++++++++++++++++++++++++')
         print('1. Calculator / 2. Area Solver / 3. LineChar Overloader / 4. Odd Number Summarizer')
         print('5. Sequential Summation / 6. Index Range')
@@ -315,8 +315,14 @@ def main():
         except ValueError:
             print('Please enter a valid number.')
         
-        proceed = input('Do you want to continue using the program? (Y/N): ').upper()
-        if proceed != 'Y':
+        while True:
+            proceed = input('Do you want to continue using the program? (Y/N): ').upper()
+            if proceed in ['Y', 'N']:
+                  break
+            else:
+                print('Invalid input. Please enter Y or N.')
+
+        if proceed == 'N':
             print('Goodbye!')
             break
 
