@@ -257,29 +257,55 @@ class IndexRange:
                 print(f'Length of the string is: {len(self.main_str)}')  
                 print('++++++++++++++++++++++++')
 
-                #index plot points
-                self.substring_val_i = int(input('Enter start index: ')) 
-                if self.substring_val_i < 0:
-                    print('Invalid input')
-                print('++++++++++++++++++++++++')
-
-                self.substring_val_e = int(input('Enter end index: '))
-                if self.substring_val_e > len(self.main_str):
-                    print('Invalid input')
-                print('++++++++++++++++++++++++')
-                
-                print('Main string:', self.main_str)
-                print('++++++++++++++++++++++++')
-                print(f'Substring from index {self.substring_val_i}:', 
-                    self.main_str[self.substring_val_i:])
-                print('++++++++++++++++++++++++')
-                print(f'Substring from index {self.substring_val_i} to {self.substring_val_e}:', 
-                      self.main_str[self.substring_val_i:self.substring_val_e])
-                print('++++++++++++++++++++++++')
             except Exception as e:
-                print(f'Error: {e}')
+                    print(f'An error occurred: {e}')
 
-                print(f'An error occurred: {e}')
+            while True:
+                    try:
+                        # index plot points
+                        self.substring_val_i = int(input('Enter start index: ')) 
+                        if self.substring_val_i < 0:
+                            print('Invalid input: Start index cannot be negative.')
+                            continue
+                        elif self.substring_val_i > len(self.main_str):
+                            print(f'Invalid input: Start index exceeds or equals string length {len(self.main_str)}.')
+                            continue
+                        
+                        self.substring_val_e = int(input('Enter end index: '))
+                        if self.substring_val_e < 0:
+                            print('Invalid input: End index cannot be negative.')
+                            continue
+                        elif self.substring_val_e > len(self.main_str):
+                            print(f'Invalid input: End index exceeds string length {len(self.main_str)}.')
+                            continue
+                        
+                        # Check if start index is less than or equal to end index
+                        if self.substring_val_i > self.substring_val_e:
+                            print('Invalid input: Start index cannot be greater than end index.')
+                            continue
+                        
+                        break  # Valid input, exit loop
+
+                    except ValueError:
+                        print('Please enter a valid number.')
+
+            while True:
+                try:
+                    print('Main string:', self.main_str)
+                    print('++++++++++++++++++++++++')
+                    print(f'Substring from index {self.substring_val_i}:', 
+                                self.main_str[self.substring_val_i:])
+                    print('++++++++++++++++++++++++')
+                    print(f'Substring from index {self.substring_val_i} to {self.substring_val_e}:', 
+                                self.main_str[self.substring_val_i:self.substring_val_e])
+                    print('++++++++++++++++++++++++')
+
+                    break
+
+                except Exception as e:
+                            print(f'Error: {e}')        
+                        
+
 
 
                 
