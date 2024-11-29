@@ -57,9 +57,16 @@ class mainProgram:
         return len(str1)
 
     def user_strrev(self, str1):
-        self.pointer = str1
-        return self.pointer[::-1]
+        str1 = list(str1)
+        left = 0
+        right = len(str1) - 1
 
+        while left < right:
+            str1[left], str1[right] = str1[right], str1[left]
+            left += 1
+            right -= 1
+        return ''.join(str1)
+    
     def execute(self):
         operation = self.selected_mode.get()
         user_input1 = self.input1.get()
